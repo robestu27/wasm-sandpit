@@ -5,12 +5,13 @@
     <title>hello-wasm example</title>
   </head>
   <body>
-    <script type="module">
-      import init, {greet} from "./pkg/wasm_sandpit.js";
-      init()
-        .then(() => {
-          greet("WebAssembly")
-        });
-      </script>
+      <canvas id="canvas" height="150" width="150"></canvas>
+      <script type="module">
+        import init, {start} from "./pkg/wasm_sandpit.js";
+        init()
+          .then(() => {
+            start()
+          });
+        </script>      
   </body>
 </html>

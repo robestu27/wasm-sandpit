@@ -1,15 +1,24 @@
 
 
-https://developer.mozilla.org/en-US/docs/WebAssembly/Rust_to_wasm
 
+
+1)  https://developer.mozilla.org/en-US/docs/WebAssembly/Rust_to_wasm
 -- Installed wasm-pack
 
     cargo install wasm-pack
 
---  Setup Carego.toml as per demo, put in test code, ran
+--  Setup Cargo.toml as per demo, put in test code, ran
 
     wasm-pack build --target web
 
 
 -- 404 because I needed to change the index.html to use the filename produced by my project, 
 -- which is "wasm_sandpit" rather than "hello_wasm" as per the example on msdn.
+
+
+2) https://rustwasm.github.io/docs/wasm-bindgen/examples/2d-canvas.html
+-- Copied code from the page (lib.rs)
+-- updated Cargo.toml with extra dependencies etc as per page
+-- Amended mt page -- not the import  changes from "greet" to "start" to reflect the function name change
+-- Ran wasm-pack and lauched it -->  I get the smiley face!
+
