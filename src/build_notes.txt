@@ -1,0 +1,15 @@
+
+
+https://developer.mozilla.org/en-US/docs/WebAssembly/Rust_to_wasm
+
+-- Installed wasm-pack
+
+    cargo install wasm-pack
+
+--  Setup Carego.toml as per demo, put in test code, ran
+
+    wasm-pack build --target web
+
+
+-- 404 because I needed to change the index.html to use the filename produced by my project, 
+-- which is "wasm_sandpit" rather than "hello_wasm" as per the example on msdn.
