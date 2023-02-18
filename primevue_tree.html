@@ -21,9 +21,20 @@
         <!-- <link href="./index.css" rel="stylesheet" /> -->
     </head>
     <body>
+        <script type="module">
+            /// Needed ?
+            // import init, {test_log, rust_get_tree} from "./pkg/wasm_sandpit.js";
+            //     init()
+            //     .then(() => {
+            //         test_log();
+            //     });
+            </script>
+
         <div id="app">
-            <h5>Basic</h5>
-            <p-tree :value="nodes"></p-tree>
+            <!-- 
+                <h5>Basic</h5>
+                <p-tree :value="nodes"></p-tree> 
+            --> 
 
             <h5>Programmatic Control</h5>
             <div style="margin-bottom: 1em">
@@ -36,7 +47,10 @@
         <script type="module">
         const { createApp, ref, onMounted } = Vue;
 
+        import init, {test_log, rust_get_tree} from "./pkg/wasm_sandpit.js";
+
         class NodeService {
+
 
             getTreeTableNodes() {
                 return fetch('demo/data/treetablenodes.json').then(res => res.json())
@@ -44,18 +58,19 @@
             }
 
             getTreeNodes() {
-                //return fetch('demo/data/treenodes.json').then(res => res.json())
-                return fetch('treenodes.json').then(res => res.json())
-                        .then(d => d.root);
+                console.log("calling rust_get_tree() from html side");
+                var x = rust_get_tree();
+
+                // In the example from PrimeVue for the "Tree", the return value is an array.
+                // For compatibility, we also return an array
+                return [x];
+                // return x.children;
             }
         }
-
-
+        
         const App = {
+
             setup() {
-                onMounted(() => {
-                    nodeService.value.getTreeNodes().then(data => nodes.value = data);
-                })
 
                 const nodes = ref();
                 const expandedKeys = ref({});
@@ -78,7 +93,20 @@
                             expandNode(child);
                         }
                     }
+
                 };
+
+                onMounted(() => {
+
+                    // There was a bit of a a timing issue in "init"
+
+                    init().then(() => {
+                        test_log();
+                        var x = nodeService.value.getTreeNodes();
+                        nodes.value = x;
+                    });
+                })
+
 
                 return { nodes, expandedKeys, nodeService, expandAll, collapseAll, expandNode }
             },

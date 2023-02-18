@@ -7,12 +7,10 @@
   <body>
       
       <script type="module">
-        import init, {start, test_log, get_arrayx, get_tree} from "./pkg/wasm_sandpit.js";
-        init()
-          .then(() => {
+        import init, {start, test_log, get_arrayx, rust_get_tree} from "./pkg/wasm_sandpit.js";
+        init().then(() => {
             start();
             test_log();
-            // get_data();
           });
  
         </script>
