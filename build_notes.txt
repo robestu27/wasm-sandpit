@@ -22,3 +22,20 @@
 -- Amended mt page -- not the import  changes from "greet" to "start" to reflect the function name change
 -- Ran wasm-pack and lauched it -->  I get the smiley face!
 
+
+
+-- This guy did what want to!!
+https://blog.roboinstruct.us/2017/06/09/rust-and-opengl-in-orbit.html
+
+
+1) "Euclid" gives various structs for 2d/3d vector logic
+2) femtovg looks like reasonable start to get app working in 1st instance
+3) https://physics.princeton.edu//~fpretori/Nbody/intro.htm
+
+4) You can google "G" the gravitation constants, and others
+        6.674×10−11 m3⋅kg−1⋅s−2
+        solarmass=1.98892 x 10 ^ 30 kg;
+        earth 5.972 × 10^24 kg
+        moon 7.34767309 × 10^22 kg
+
+5) We'd need speed(velocity) and distance of sun-to-earth and earth-to-moon

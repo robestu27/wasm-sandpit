@@ -5,13 +5,62 @@
     <title>hello-wasm example</title>
   </head>
   <body>
-      <canvas id="canvas" height="150" width="150"></canvas>
+      
       <script type="module">
-        import init, {start} from "./pkg/wasm_sandpit.js";
+        import init, {start, test_log, get_arrayx, get_tree} from "./pkg/wasm_sandpit.js";
         init()
           .then(() => {
-            start()
+            start();
+            test_log();
+            // get_data();
           });
-        </script>      
+ 
+        </script>
+        <canvas id="canvas" height="150" width="150"></canvas>
+        <div id="my_div">
+        </div>
+        <script type="module">
+            import init, {test_log, get_arrayx, rust_get_tree}  from "./pkg/wasm_sandpit.js";
+
+            console.log("JS init");
+
+            init().then(() => {
+              test_log();
+              document.querySelector('#canvas').addEventListener('click', get_tree_data)
+              // get_data();
+              get_tree_data();
+            });
+
+            // function get_data() {
+            //   var el = document.getElementById("my_div");
+            //   el.replaceChildren( /* nothing */ );
+            //   var x = get_arrayx();
+            //   show_table(x);
+            // }
+
+            // function show_table(arr) {
+            //   var x = document.getElementById("my_div");
+            //   for (var i = 0; i<arr.length; i++) {
+            //     var p = document.createElement("p")
+            //     p.innerText =  arr[i].party_id + ": " + arr[i].legal_name ;
+            //     x.appendChild(p);
+            //   }
+            // }
+
+            function get_tree_data() {
+              var el = document.getElementById("my_div");
+              el.replaceChildren( /* nothing */ );
+              var x = rust_get_tree();
+              show_tree_table(x);
+            }
+
+            // Just dump rsult to console
+            function show_tree_table(t) {
+              console.log(t)
+            }
+
+
+      </script>
+
   </body>
 </html>
