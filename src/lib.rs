@@ -1,16 +1,14 @@
 //extern crate lazy_static;
 mod tree;
 
-use std::f64;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 use web_sys::console;
-use serde::{Serialize};
+use serde::Serialize;
 
 use std::sync::Arc;
 use std::sync::Mutex;
 
-use crate::tree::TreeNode;
+use crate::tree::PrimeTreeNode;
 
 // This creates some "state" we can refer back to, in this example we can
 // see the state ("inner") increases with each click
@@ -24,57 +22,65 @@ lazy_static::lazy_static! {
 static mut XXX:usize  =0usize;
 
 #[derive(Serialize)]
+
+/// Simple Party struct used as an example.
+/// To render in a PrimeVue tree, use Serde's rename function
 struct Party {
-    party_id: u32,
+    
+    #[serde(rename="key")]
+    party_id: i32,
+
+    #[serde(rename="label")]
     legal_name: String,
+
     country_risk: String,
 }
 
 
-#[wasm_bindgen(start)]
-pub fn start() {
-    console::log_1(&"Oooh!, you are awful but I like you.".into());
-    let document = web_sys::window().unwrap().document().unwrap();
-    let canvas = document.get_element_by_id("canvas").unwrap();
-    let canvas: web_sys::HtmlCanvasElement = canvas
-        .dyn_into::<web_sys::HtmlCanvasElement>()
-        .map_err(|_| ())
-        .unwrap();
+// #[wasm_bindgen(start)]
+// pub fn start() {
+//     console::log_1(&"Rust -- start()".into());
+//     let document = web_sys::window().unwrap().document().unwrap();
+//     let canvas = document.get_element_by_id("canvas").unwrap();
+//     let canvas: web_sys::HtmlCanvasElement = canvas
+//         .dyn_into::<web_sys::HtmlCanvasElement>()
+//         .map_err(|_| ())
+//         .unwrap();
 
-    let context = canvas
-        .get_context("2d")
-        .unwrap()
-        .unwrap()
-        .dyn_into::<web_sys::CanvasRenderingContext2d>()
-        .unwrap();
+//     let context = canvas
+//         .get_context("2d")
+//         .unwrap()
+//         .unwrap()
+//         .dyn_into::<web_sys::CanvasRenderingContext2d>()
+//         .unwrap();
 
-    context.begin_path();
+//     context.begin_path();
 
-    // Draw the outer circle.
-    context
-        .arc(75.0, 75.0, 50.0, 0.0, f64::consts::PI * 2.0)
-        .unwrap();
+//     // Draw the outer circle.
+//     context
+//         .arc(75.0, 75.0, 50.0, 0.0, f64::consts::PI * 2.0)
+//         .unwrap();
 
-    // Draw the mouth.
-    context.move_to(110.0, 75.0);
-    context.arc(75.0, 75.0, 35.0, 0.0, f64::consts::PI).unwrap();
+//     // Draw the mouth.
+//     context.move_to(110.0, 75.0);
+//     context.arc(75.0, 75.0, 35.0, 0.0, f64::consts::PI).unwrap();
 
-    // Draw the left eye.
-    context.move_to(65.0, 65.0);
-    context
-        .arc(60.0, 65.0, 5.0, 0.0, f64::consts::PI * 2.0)
-        .unwrap();
+//     // Draw the left eye.
+//     context.move_to(65.0, 65.0);
+//     context
+//         .arc(60.0, 65.0, 5.0, 0.0, f64::consts::PI * 2.0)
+//         .unwrap();
 
-    // Draw the right eye.
-    context.move_to(95.0, 65.0);
-    context
-        .arc(90.0, 65.0, 5.0, 0.0, f64::consts::PI * 1.0)
-        .unwrap();
+//     // Draw the right eye.
+//     context.move_to(95.0, 65.0);
+//     context
+//         .arc(90.0, 65.0, 5.0, 0.0, f64::consts::PI * 1.0)
+//         .unwrap();
 
-    context.stroke();
-}
+//     context.stroke();
+// }
 
-fn log(msg: &String) {
+fn log(msg: &str) {
     console::log_1(&wasm_bindgen::JsValue::from_str(msg));
     //web_sys::console::log_1(msg.into());
 }
@@ -97,11 +103,11 @@ pub fn get_arrayx() -> JsValue {
     
     for i in 0..vec_size {
         v.push(
-            Party {legal_name: format!("[{}.{}] Party Name {}", *mg, unsafe_x, i), party_id: 23007+i as u32, country_risk: String::from("DE")}
+            Party {legal_name: format!("[{}.{}] Party Name {}", *mg, unsafe_x, i), party_id: 23007+i as i32, country_risk: String::from("DE")}
         );
     }
 
-    log(&format!("[rust] get_array <--"));
+    log("[rust] get_array <--");
     serde_wasm_bindgen::to_value(&v).unwrap()
 
 }
@@ -113,42 +119,31 @@ pub fn test_log() {
 }
 
 
+/// Creates a tree structure and passes back to be rendered in a PrimeFaces Tree
 #[wasm_bindgen]
 pub fn rust_get_tree() -> JsValue {
 
-    log(&format!("[rust] get_tree --> "));
-    
-    // create a test vec - to hold nodes in 
-    let mut v: Vec<Party> = Vec::with_capacity(1000);
-    
-    for i in 0..1000 {
-        v.push(
-            Party {legal_name: format!("Party Name {}", i), party_id: 23007+i as u32, country_risk: String::from("DE")}
-        );
-    }
+    log("[rust] get_tree --> ");
 
-    let root_p = Party {legal_name: format!("Group node"), party_id: 93485, country_risk: String::from("FR")};
-
-    let mut tree = TreeNode::new( &root_p );
+    let mut tree = PrimeTreeNode::new( 93485, "Group node".to_string());
 
     let mut party_idx = 0;
 
-    for _i in 0..100 {
+    for _i in 0..200 {
 
-        let p = &v[party_idx];
+        // let p = &v[party_idx];
         party_idx += 1;
-        // v.push(p);
-        // let pref = v.last().unwrap();
 
-        let new_node_1 = tree.add_child(&p);
+        let new_node_1 = tree.add_child(party_idx, format!("Party id - {party_idx}"));
 
-        for _j in 0..3 {
-            let p = &v[party_idx];
-             new_node_1.add_child(p);
+        for _j in 0..5 {
+            // let p = &v[party_idx];
+            party_idx += 1;
+            new_node_1.add_child(party_idx, format!("Party id - {party_idx}"));
         }
     }
 
-    log(&format!("[rust] get_tree <-- "));
+    log("[rust] get_tree <-- ");
     serde_wasm_bindgen::to_value(&tree).unwrap()
 
 }
