@@ -15,14 +15,14 @@ impl PrimeTreeNode {
 
     // Creates a new tree node 
     pub fn new (key: i32, label: String) -> Self {
-        Self {key: key, label: label, children: Vec::new()}
+        Self {key, label, children: Vec::new()}
     }
 
 
     // Adds a child to the tree
     pub fn add_child (&mut self, key: i32, label: String) -> &mut Self {
 
-        let new_node = Self {key: key, label: label, children: Vec::new()};
+        let new_node = Self {key, label, children: Vec::new()};
 
         self.children.push(new_node);
         self.children.last_mut().unwrap()

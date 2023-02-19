@@ -1,11 +1,9 @@
 //extern crate lazy_static;
 mod tree;
 
-use std::f64;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 use web_sys::console;
-use serde::{Serialize};
+use serde::Serialize;
 
 use std::sync::Arc;
 use std::sync::Mutex;
@@ -82,7 +80,7 @@ struct Party {
 //     context.stroke();
 // }
 
-fn log(msg: &String) {
+fn log(msg: &str) {
     console::log_1(&wasm_bindgen::JsValue::from_str(msg));
     //web_sys::console::log_1(msg.into());
 }
@@ -109,7 +107,7 @@ pub fn get_arrayx() -> JsValue {
         );
     }
 
-    log(&format!("[rust] get_array <--"));
+    log("[rust] get_array <--");
     serde_wasm_bindgen::to_value(&v).unwrap()
 
 }
@@ -125,9 +123,9 @@ pub fn test_log() {
 #[wasm_bindgen]
 pub fn rust_get_tree() -> JsValue {
 
-    log(&format!("[rust] get_tree --> "));
+    log("[rust] get_tree --> ");
 
-    let mut tree = PrimeTreeNode::new( 93485, format!("Group node"));
+    let mut tree = PrimeTreeNode::new( 93485, "Group node".to_string());
 
     let mut party_idx = 0;
 
@@ -145,7 +143,7 @@ pub fn rust_get_tree() -> JsValue {
         }
     }
 
-    log(&format!("[rust] get_tree <-- "));
+    log("[rust] get_tree <-- ");
     serde_wasm_bindgen::to_value(&tree).unwrap()
 
 }
