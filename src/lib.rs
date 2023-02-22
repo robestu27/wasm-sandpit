@@ -1,6 +1,8 @@
 //extern crate lazy_static;
 mod tree;
 
+extern crate serde_json;
+
 use wasm_bindgen::prelude::*;
 use web_sys::console;
 use serde::Serialize;
@@ -21,11 +23,10 @@ lazy_static::lazy_static! {
 
 static mut XXX:usize  =0usize;
 
-#[derive(Serialize)]
-
 /// Simple Party struct used as an example.
 /// To render in a PrimeVue tree, use Serde's rename function
-struct Party {
+#[derive(Serialize)]
+pub struct Party {
     
     #[serde(rename="key")]
     party_id: i32,
@@ -33,52 +34,50 @@ struct Party {
     #[serde(rename="label")]
     legal_name: String,
 
+    #[serde(rename="countryRisk")]
     country_risk: String,
+
+    #[serde(rename="limitCurr")]
+    limit_curr: String,
+
+    #[serde(rename="limitAmt")]
+    limit_amt: f64,
 }
 
+/// Version used for 
+// #[derive(Serialize)]
+// struct PartyTreeTable {
+    
+//     #[serde(rename="key")]
+//     party_id: i32,
 
-// #[wasm_bindgen(start)]
-// pub fn start() {
-//     console::log_1(&"Rust -- start()".into());
-//     let document = web_sys::window().unwrap().document().unwrap();
-//     let canvas = document.get_element_by_id("canvas").unwrap();
-//     let canvas: web_sys::HtmlCanvasElement = canvas
-//         .dyn_into::<web_sys::HtmlCanvasElement>()
-//         .map_err(|_| ())
-//         .unwrap();
 
-//     let context = canvas
-//         .get_context("2d")
-//         .unwrap()
-//         .unwrap()
-//         .dyn_into::<web_sys::CanvasRenderingContext2d>()
-//         .unwrap();
+//     #[serde(rename="data.name")]
+//     legal_name: String,
 
-//     context.begin_path();
+//     #[serde(rename="data.country")]
+//     country_risk: String,
 
-//     // Draw the outer circle.
-//     context
-//         .arc(75.0, 75.0, 50.0, 0.0, f64::consts::PI * 2.0)
-//         .unwrap();
 
-//     // Draw the mouth.
-//     context.move_to(110.0, 75.0);
-//     context.arc(75.0, 75.0, 35.0, 0.0, f64::consts::PI).unwrap();
-
-//     // Draw the left eye.
-//     context.move_to(65.0, 65.0);
-//     context
-//         .arc(60.0, 65.0, 5.0, 0.0, f64::consts::PI * 2.0)
-//         .unwrap();
-
-//     // Draw the right eye.
-//     context.move_to(95.0, 65.0);
-//     context
-//         .arc(90.0, 65.0, 5.0, 0.0, f64::consts::PI * 1.0)
-//         .unwrap();
-
-//     context.stroke();
 // }
+
+fn new_party(id: i32) -> Party {
+
+    let mnt = if id % 2 == 0 {
+        id as f64 * 10007.234f64
+    } else {
+        id as f64 * 304767.717f64
+    };
+
+    Party {
+        party_id: id,
+        legal_name: format!("A generated party name {id}"),
+        country_risk: "DE".into(),
+        limit_amt: mnt,
+        limit_curr: "EUR".into()
+    }
+}
+
 
 fn log(msg: &str) {
     console::log_1(&wasm_bindgen::JsValue::from_str(msg));
@@ -103,7 +102,8 @@ pub fn get_arrayx() -> JsValue {
     
     for i in 0..vec_size {
         v.push(
-            Party {legal_name: format!("[{}.{}] Party Name {}", *mg, unsafe_x, i), party_id: 23007+i as i32, country_risk: String::from("DE")}
+            new_party(23007i32 + i as i32)
+            //Party {legal_name: format!("[{}.{}] Party Name {}", *mg, unsafe_x, i), party_id: 23007+i as i32, country_risk: String::from("DE")}
         );
     }
 
@@ -125,7 +125,9 @@ pub fn rust_get_tree() -> JsValue {
 
     log("[rust] get_tree --> ");
 
-    let mut tree = PrimeTreeNode::new( 93485, "Group node".to_string());
+    let group = new_party(93485);
+    //Party {party_id: 93485, legal_name: "Party id - 93485".into(), country_risk: "DE".into() };
+    let mut tree = PrimeTreeNode::new( 93485, group);
 
     let mut party_idx = 0;
 
@@ -134,12 +136,15 @@ pub fn rust_get_tree() -> JsValue {
         // let p = &v[party_idx];
         party_idx += 1;
 
-        let new_node_1 = tree.add_child(party_idx, format!("Party id - {party_idx}"));
+        let p = new_party(party_idx) ; // Party {party_id: party_idx, legal_name: format!("Party id - {party_idx}"), country_risk: "DE".into() };
+
+        let new_node_1 = tree.add_child(party_idx, p);
 
         for _j in 0..5 {
             // let p = &v[party_idx];
             party_idx += 1;
-            new_node_1.add_child(party_idx, format!("Party id - {party_idx}"));
+            let p = new_party(party_idx) ; //Party {party_id: party_idx, legal_name: format!("Party id - {party_idx}"), country_risk: "GB".into() };
+            new_node_1.add_child(party_idx, p);
         }
     }
 
@@ -147,3 +152,5 @@ pub fn rust_get_tree() -> JsValue {
     serde_wasm_bindgen::to_value(&tree).unwrap()
 
 }
+
+
